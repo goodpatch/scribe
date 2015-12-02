@@ -6595,9 +6595,19 @@ define('plugins/core/patches/events',[], function () {
 
       var nodeHelpers = scribe.node;
 
+      var isIME = false;
+      var chkIME = function(event) {
+        var keyCode = event.which || event.keyCode;
+        isIME = event.type === 'keydown' && keyCode === 229;
+      };
+
       if (scribe.allowsBlockElements()) {
+        scribe.el.addEventListener('keydown', function (event) {
+          chkIME(event);
+        });
+
         scribe.el.addEventListener('keyup', function (event) {
-          if (event.keyCode === 8 || event.keyCode === 46) { // backspace or delete
+          if (!isIME && event.keyCode === 8 || event.keyCode === 46) { // backspace or delete
 
             var selection = new scribe.api.Selection();
 
